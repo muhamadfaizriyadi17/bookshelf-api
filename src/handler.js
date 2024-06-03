@@ -3,7 +3,14 @@ const books = require('./books');
 
 const addBookHandler = (request, h) => {
   const {
-    name, year, author, summary, publisher, pageCount, readPage, reading,
+    name,
+    year,
+    author,
+    summary,
+    publisher,
+    pageCount,
+    readPage,
+    reading,
   } = request.payload;
 
   if (name === undefined) {
@@ -19,7 +26,8 @@ const addBookHandler = (request, h) => {
   if (pageCount < readPage) {
     const response = h.response({
       status: 'fail',
-      message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+      message:
+        'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
     });
     response.code(400);
 
@@ -29,7 +37,7 @@ const addBookHandler = (request, h) => {
   const id = nanoid(16);
   const insertedAt = new Date().toISOString();
   const updatedAt = insertedAt;
-  const finished = (pageCount === readPage);
+  const finished = pageCount === readPage;
   const newBook = {
     id,
     name,
@@ -77,16 +85,19 @@ const getAllBooksHandler = (request, h) => {
   let filteredBooks = books;
 
   if (name !== undefined) {
-    filteredBooks = filteredBooks.filter((book) => book
-      .name.toLowerCase().includes(name.toLowerCase()));
+    filteredBooks = filteredBooks.filter((book) => book.name.toLowerCase().includes(name.toLowerCase()));
   }
 
   if (reading !== undefined) {
-    filteredBooks = filteredBooks.filter((book) => book.reading === !!Number(reading));
+    filteredBooks = filteredBooks.filter(
+      (book) => book.reading === !!Number(reading),
+    );
   }
 
   if (finished !== undefined) {
-    filteredBooks = filteredBooks.filter((book) => book.finished === !!Number(finished));
+    filteredBooks = filteredBooks.filter(
+      (book) => book.finished === !!Number(finished),
+    );
   }
 
   const response = h.response({
@@ -129,7 +140,14 @@ const getBookByIdHandler = (request, h) => {
 const editBookByIdHandler = (request, h) => {
   const { id } = request.params;
   const {
-    name, year, author, summary, publisher, pageCount, readPage, reading,
+    name,
+    year,
+    author,
+    summary,
+    publisher,
+    pageCount,
+    readPage,
+    reading,
   } = request.payload;
   const updatedAt = new Date().toISOString();
   const index = books.findIndex((book) => book.id === id);
@@ -148,14 +166,15 @@ const editBookByIdHandler = (request, h) => {
     if (pageCount < readPage) {
       const response = h.response({
         status: 'fail',
-        message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+        message:
+          'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
       });
       response.code(400);
 
       return response;
     }
 
-    const finished = (pageCount === readPage);
+    const finished = pageCount === readPage;
 
     books[index] = {
       ...books[index],
